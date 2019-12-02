@@ -5,7 +5,10 @@
         <Stepper v-model="currentStep" :steps="steps" />
         <router-view :name="currentStep"></router-view>
         <div class="flex-container__justify-right">
-          <PcButton :message="'Continue'" />
+          <PcButton :message="'Cancel'" @click="handleCancel" />
+          <PcButton v-if="!isFirstStep" :message="'Back'" @click="handleBack" />
+          <PcButton v-if="!isLastStep" :message="'Continue'" @click="this.handleContinue" />
+          <PcButton v-if="isLastStep" :message="'Send'" />
         </div>
       </div>
     </div>
@@ -28,18 +31,41 @@ export default {
       currentStep: "Who"
     };
   },
-  computer: {
-    currentRoute() {
-      return this.currentStep;
+  computed: {
+    isFirstStep() {
+      const index = this.steps.indexOf(this.currentStep);
+      return index === 0;
+    },
+    isLastStep() {
+      const index = this.steps.indexOf(this.currentStep);
+      return index === (this.steps.length - 1);
+    }
+  },
+  watch: {
+    currentStep(newValue, oldValue) {
+      console.log("oldValuexxx", oldValue);
+      console.log("newValuexxx", newValue);
+      return newValue;
+    }
+  },
+  methods: {
+    handleCancel() {
+
+    },
+    handleBack() {
+      const index = this.steps.indexOf(this.currentStep);
+      const newIndex = index - 1;
+      this.currentStep = this.steps[newIndex];
+    },
+    handleContinue() {
+      const index = this.steps.indexOf(this.currentStep);
+      const newIndex = index + 1;
+      this.currentStep = this.steps[newIndex];
+    },
+    handleLastStep() {
+
     }
   }
-  // watch: {
-  //   currentStep(newValue, oldValue) {
-  //     console.log("oldValue", oldValue);
-  //     console.log("newValue", newValue);
-  //     return newValue;
-  //   }
-  // }
 };
 </script>
 

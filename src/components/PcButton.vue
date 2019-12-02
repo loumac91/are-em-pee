@@ -1,5 +1,5 @@
 <template>
-  <button class="pc-btn">
+  <button class="pc-btn" v-on="$listeners">
     {{ message }}
   </button>
 </template>

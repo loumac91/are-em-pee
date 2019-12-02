@@ -46,6 +46,12 @@ export default {
       return `stepper-${uuid()}`;
     }
   },
+  watch: {
+    value(newValue, oldValue) {
+      const index = this.getIndex(newValue);
+      this.changeStep(index);
+    }
+  },
   methods: {
     getSteps() {
       const arr = this.steps.map((step, index) => {
@@ -56,26 +62,44 @@ export default {
 
         return { index, value, visited, disabled };
       });
-      console.log("arr", arr);
+
       return arr;
     },
     handleChanged() {
+      console.log("handle changed", arguments);
       this.changeStep.apply(this, arguments);
     },
     changeStep(index) {
+      console.log("index", index);
       const value = this.steps[index];
       this.setStep(index, "visited", true);
       this.emitValue(value);
-      console.log("value", value);
     },
     setStep(index, prop, value) {
+      console.log("before", this.stepsArray[index]);
       this.$set(this.stepsArray[index], prop, value);
+      console.log("after", this.stepsArray[index]);
     },
     emitValue(value) {
       this.$emit("input", value);
     },
     getIndex(value) {
       return this.stepsArray.map(step => step.value).indexOf(value);
+    },
+    offset(offset) {
+      const index = this.index + offset;
+      this.handleChanged(index);
+    },
+    next() {
+      this.offset(1);
+    },
+    previous() {
+      this.offset(-1);
+    },
+    reset() {
+      this.stepsArray = this.getSteps();
+      this.index = 0;
+      this.$emit("reset");
     }
   }
 };
